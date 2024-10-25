@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Link ke QR Code</title>
+    <link rel="stylesheet" href="main.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Konversi Link menjadi Kode QR</h1>
+        <input type="text" id="link-input" placeholder="Masukkan link di sini">
+        <input type="text" id="description-input" placeholder="Masukkan deskripsi di sini">
+        <button onclick="generateQRCode()">Buat Kode QR</button>
+        <div id="qr-code-container"></div>
+        <button id="download-btn" onclick="downloadQRCode()" style="display: none;">Unduh Kode QR</button>
+    </div>
+
+    <!-- Script untuk membuat kode QR menggunakan library qrious -->
+    <script src="https://cdn.jsdelivr.net/npm/qrious@4.0.2/dist/qrious.min.js"></script>
+    <script>
+        let qr;
+
+        function generateQRCode() {
+            const link = document.getElementById("link-input").value;
+            const qrContainer = document.getElementById("qr-code-container");
+            const downloadBtn = document.getElementById("download-btn");
+
+            if (link === "") {
+                alert("Masukkan link terlebih dahulu!");
+                return;
+            }
+
+            // Bersihkan QR code sebelumnya
+            qrContainer.innerHTML = "";
+            downloadBtn.style.display = "none";
+
+            // Membuat kode QR baru
+            qr = new QRious({
+                element: document.createElement("canvas"),
+                value: link,
+                size: 200,
+            });
+
+            // Tambahkan QR ke container
+            qrContainer.appendChild(qr.element);
+
+            // Tampilkan tombol download
+            downloadBtn.style.display = "inline-block";
+        }
+
+        function downloadQRCode() {
+            if (qr) {
+                // Buat canvas untuk menggambar QR dan deskripsi
+                const canvas = document.createElement("canvas");
+                const ctx = canvas.getContext("2d");
+                
+                // Mengatur ukuran canvas
+                canvas.width = 200;
+                canvas.height = 250; // Tinggi tambahan untuk deskripsi
+
+                // Gambar QR ke canvas
+                ctx.drawImage(qr.element, 0, 0);
+
+                // Ambil deskripsi dari input
+                const description = document.getElementById("description-input").value;
+
+                // Setel gaya teks untuk deskripsi
+                ctx.font = "16px Arial";
+                ctx.fillStyle = "black";
+                ctx.textAlign = "center";
+
+                // Gambar deskripsi di bawah QR Code
+                ctx.fillText(description, canvas.width / 2, 230); // Menempatkan teks di tengah
+
+                // Siapkan tautan untuk mengunduh
+                const link = document.createElement("a");
+                link.href = canvas.toDataURL("image/png");
+                link.download = "qrcode.png";
+                link.click();
+            }
+        }
+    </script>
+</body>
+</html>
