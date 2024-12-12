@@ -1,5 +1,5 @@
 function doGet(e) {
-    var spreadsheet = SpreadsheetApp.openById("1P34OC0zgEHYHiSyC7B1zwo7xzSzWkFOidbeXZUkh2ns");
+    var spreadsheet = SpreadsheetApp.openById("---");
     var sheet = spreadsheet.getActiveSheet();
 
     // Mendapatkan parameter lantai dari URL
